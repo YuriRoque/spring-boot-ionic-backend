@@ -55,6 +55,7 @@ public class CategoriaService {
   public void delete(Integer id) {
 
     find(id);
+    
     try {
       repo.deleteById(id);
     } catch (DataIntegrityViolationException e) {
@@ -73,7 +74,7 @@ public class CategoriaService {
   public Categoria fromDTO(CategoriaDTO objDto) {
     
     return new Categoria(objDto.getId(), objDto.getNome());
-    
+
   }
 
 }
