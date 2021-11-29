@@ -1,5 +1,6 @@
 package com.yuri.cursomc.resources;
 
+import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -7,6 +8,7 @@ import javax.validation.Valid;
 
 import com.yuri.cursomc.domain.Cliente;
 import com.yuri.cursomc.dto.ClienteDTO;
+import com.yuri.cursomc.dto.ClienteNewDTO;
 import com.yuri.cursomc.services.ClienteService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @RestController
 @RequestMapping(value = "/clientes")
@@ -32,6 +35,16 @@ public class ClienteResource {
     Cliente obj = service.find(id);
     return ResponseEntity.ok().body(obj);
 
+  }
+
+  @RequestMapping(method = RequestMethod.POST)
+  public ResponseEntity<Void> insert(@Valid @RequestBody ClienteNewDTO objDto) {
+    Cliente obj = service.fromDTO(objDto);
+    obj = service.insert(obj);
+
+    URI uri = ServletUriComponentsBuilder.fromCurrentContextPath().buildAndExpand(obj.getId()).toUri();
+
+    return ResponseEntity.created(uri).build();
   }
 
   @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
