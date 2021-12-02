@@ -1,0 +1,11 @@
+Para fazer o dump é preciso rodar esse script: 
+
+heroku config | grep CLEARDB_DATABASE_URL
+
+na pasta da aplicação e depois que ele retornar
+
+mysql://b749803b01f28:7a036e0@us-cdbr-east-04.cleardb.com/heroku_e833f6e6ebe559?reconnect=true
+
+substitua de acordo com o comando a seguir dentro da pasta que estiver o arquivo .sql:
+
+mysql --host=us-cdbr-east-04.cleardb.com --user=b749803b01f28 --password=7a036e0 --reconnect heroku_e833f6e6ebe559 < arquivo.sql
