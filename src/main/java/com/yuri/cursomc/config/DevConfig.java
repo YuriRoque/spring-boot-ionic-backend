@@ -3,6 +3,8 @@ package com.yuri.cursomc.config;
 import java.text.ParseException;
 
 import com.yuri.cursomc.services.DBService;
+import com.yuri.cursomc.services.EmailService;
+import com.yuri.cursomc.services.SmtpEmailService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,7 +24,7 @@ public class DevConfig {
 
   @Bean
   public boolean instantiateDatabase() throws ParseException {
-    
+
     if (!"create".equals(strategy)) {
       return false;
     }
@@ -33,4 +35,9 @@ public class DevConfig {
 
   }
 
+  @Bean
+  public EmailService emailService() {
+    return new SmtpEmailService();
+  }
+  
 }
