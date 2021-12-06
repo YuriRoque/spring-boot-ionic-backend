@@ -3,6 +3,7 @@ package com.yuri.cursomc.config;
 import java.util.Arrays;
 
 import com.yuri.cursomc.security.JWTAuthenticationFilter;
+import com.yuri.cursomc.security.JWTAuthorizationFilter;
 import com.yuri.cursomc.security.JWTUtil;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,6 +61,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .permitAll().antMatchers(PUBLIC_MATCHERS).permitAll().anyRequest().authenticated();
 
     http.addFilter(new JWTAuthenticationFilter(authenticationManager(), jwtUtil));
+
+    http.addFilter(new JWTAuthorizationFilter(authenticationManager(), jwtUtil, userDetailsService));
 
     // Garante que não vai criar uma sessão de usuário
     http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
