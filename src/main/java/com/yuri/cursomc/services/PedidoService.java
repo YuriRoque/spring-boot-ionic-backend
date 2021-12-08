@@ -3,6 +3,7 @@ package com.yuri.cursomc.services;
 import java.util.Date;
 import java.util.Optional;
 
+import com.yuri.cursomc.domain.Cliente;
 import com.yuri.cursomc.domain.ItemPedido;
 import com.yuri.cursomc.domain.PagamentoComBoleto;
 import com.yuri.cursomc.domain.Pedido;
@@ -10,9 +11,14 @@ import com.yuri.cursomc.domain.enums.EstadoPagamento;
 import com.yuri.cursomc.repositories.ItemPedidoRepository;
 import com.yuri.cursomc.repositories.PagamentoRepository;
 import com.yuri.cursomc.repositories.PedidoRepository;
+import com.yuri.cursomc.security.UserSS;
+import com.yuri.cursomc.services.exceptions.AuthorizationException;
 import com.yuri.cursomc.services.exceptions.ObjectNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -63,7 +69,7 @@ public class PedidoService {
     }
 
     obj = repo.save(obj);
-    
+
     pagamentoRepository.save(obj.getPagamento());
 
     for (ItemPedido ip : obj.getItens()) {
@@ -78,6 +84,22 @@ public class PedidoService {
     emailService.sendOrderConfirmationHtmlEmail(obj);
 
     return obj;
+
+  }
+
+  public Page<Pedido> findPage(Integer page, Integer linesPerPage, String orderBy, String direction) {
+
+    UserSS user = UserService.authenticated();
+
+    if (user == null) {
+      throw new AuthorizationException("Acesso negado");
+    }
+
+    PageRequest pageRequest = PageRequest.of(page, linesPerPage, Direction.valueOf(direction), orderBy);
+
+    Cliente cliente = clienteService.find(user.getId());
+
+    return repo.findByCliente(cliente, pageRequest);
 
   }
 
