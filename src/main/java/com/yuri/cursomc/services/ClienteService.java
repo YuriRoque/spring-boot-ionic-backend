@@ -6,11 +6,14 @@ import java.util.Optional;
 import com.yuri.cursomc.domain.Cidade;
 import com.yuri.cursomc.domain.Cliente;
 import com.yuri.cursomc.domain.Endereco;
+import com.yuri.cursomc.domain.enums.Perfil;
 import com.yuri.cursomc.domain.enums.TipoCliente;
 import com.yuri.cursomc.dto.ClienteDTO;
 import com.yuri.cursomc.dto.ClienteNewDTO;
 import com.yuri.cursomc.repositories.ClienteRepository;
 import com.yuri.cursomc.repositories.EnderecoRepository;
+import com.yuri.cursomc.security.UserSS;
+import com.yuri.cursomc.services.exceptions.AuthorizationException;
 import com.yuri.cursomc.services.exceptions.DataIntegrityException;
 import com.yuri.cursomc.services.exceptions.ObjectNotFoundException;
 
@@ -35,6 +38,12 @@ public class ClienteService {
   private EnderecoRepository enderecoRepository;
 
   public Cliente find(Integer id) {
+
+    UserSS user = UserService.authenticated();
+
+    if (user == null || !user.hasHole(Perfil.ADMIN) && !id.equals(user.getId())) {
+      throw new AuthorizationException("Acesso negado");
+    }
 
     Optional<Cliente> obj = clienteRepository.findById(id);
 

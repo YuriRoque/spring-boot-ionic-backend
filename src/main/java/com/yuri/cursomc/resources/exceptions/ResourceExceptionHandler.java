@@ -2,6 +2,7 @@ package com.yuri.cursomc.resources.exceptions;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.yuri.cursomc.services.exceptions.AuthorizationException;
 import com.yuri.cursomc.services.exceptions.DataIntegrityException;
 import com.yuri.cursomc.services.exceptions.ObjectNotFoundException;
 
@@ -37,7 +38,7 @@ public class ResourceExceptionHandler {
   public ResponseEntity<StandardError> methodArgumentNotValid(MethodArgumentNotValidException e,
       HttpServletRequest request) {
 
-    ValidationError err = new ValidationError(HttpStatus.BAD_REQUEST.value(),   "Erro de validação",
+    ValidationError err = new ValidationError(HttpStatus.BAD_REQUEST.value(), "Erro de validação",
         System.currentTimeMillis());
 
     for (FieldError x : e.getBindingResult().getFieldErrors()) {
@@ -45,6 +46,14 @@ public class ResourceExceptionHandler {
     }
 
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
+
+  }
+  
+  @ExceptionHandler(AuthorizationException.class)
+  public ResponseEntity<StandardError> authorization(AuthorizationException e, HttpServletRequest request) {
+    StandardError err = new StandardError(HttpStatus.FORBIDDEN.value(), e.getMessage(), System.currentTimeMillis());
+
+    return ResponseEntity.status(HttpStatus.FORBIDDEN).body(err);
 
   }
 
