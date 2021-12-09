@@ -38,8 +38,6 @@ public class AuthService {
     clienteRepository.save(cliente);
 
     emailService.sendNewPasswordEmail(cliente, newPass);
-      
-
 
   }
 
