@@ -35,6 +35,7 @@ public class ClienteResource {
   public ResponseEntity<Cliente> find(@PathVariable Integer id) {
 
     Cliente obj = service.find(id);
+
     return ResponseEntity.ok().body(obj);
 
   }
@@ -57,6 +58,7 @@ public class ClienteResource {
     URI uri = ServletUriComponentsBuilder.fromCurrentContextPath().buildAndExpand(obj.getId()).toUri();
 
     return ResponseEntity.created(uri).build();
+    
   }
 
   @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
